@@ -1,0 +1,9 @@
+{
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  "compilerOptions": {
+    "target": "ES5",
+    "allowJs": true,
+    "lib": ["ESNext", "DOM"]
+  }
+}
