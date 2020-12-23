@@ -4,6 +4,7 @@
   "description": "An extended events here",
   "author": "Konstantin Buza",
   "license": "MIT",
+  "repository": "github:buza-me/msgee",
   "main": "dist/lib/main.js",
   "types": "dist/lib/types/main.d.ts",
   "browser": "dist/bundle.browser.umd.js",
