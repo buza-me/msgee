@@ -1,9 +1,10 @@
 {
   "name": "msgee",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An extended events here",
   "author": "Konstantin Buza",
   "license": "MIT",
+  "repository": "github:buza-me/msgee",
   "main": "dist/lib/main.js",
   "types": "dist/lib/types/main.d.ts",
   "browser": "dist/bundle.browser.umd.js",
@@ -15,8 +16,8 @@
     "build": "tsc --outDir dist/lib --declarationDir dist/types --declaration true && rollup -c rollup.config.js",
     "lint-fix": "eslint ./ --fix",
     "lint": "eslint ./",
-    "preversion": "./preversion.sh",
-    "version": "./version.sh",
+    "preversion": "sh ./preversion.sh",
+    "version": "sh ./version.sh",
     "publish": "sh ./publish.sh"
   },
   "dependencies": {},
