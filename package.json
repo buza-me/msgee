@@ -16,8 +16,8 @@
     "build": "tsc --outDir dist/lib --declarationDir dist/types --declaration true && rollup -c rollup.config.js",
     "lint-fix": "eslint ./ --fix",
     "lint": "eslint ./",
-    "preversion": "./preversion.sh",
-    "version": "./version.sh",
+    "preversion": "sh ./preversion.sh",
+    "version": "sh ./version.sh",
     "publish": "sh ./publish.sh"
   },
   "dependencies": {},
