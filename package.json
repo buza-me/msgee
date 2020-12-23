@@ -2,15 +2,23 @@
   "name": "msgee",
   "version": "1.0.0",
   "description": "An extended events here",
-  "main": "index.js",
+  "author": "Konstantin Buza",
+  "license": "MIT",
+  "main": "dist/lib/main.js",
+  "types": "dist/lib/types/main.d.ts",
+  "browser": "dist/bundle.browser.umd.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "rollup -c rollup.config.js",
+    "build": "tsc --outDir dist/lib --declarationDir dist/types --declaration true && rollup -c rollup.config.js",
     "lint-fix": "eslint ./ --fix",
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "preversion": "./preversion.sh",
+    "version": "./version.sh",
+    "publish": "sh ./publish.sh"
   },
-  "author": "Kostiantyn (Konstantin) Buza, @buza-me",
-  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.0.0",
