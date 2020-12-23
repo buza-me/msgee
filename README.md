@@ -8,5 +8,6 @@ npm i msgee
 
 ## Installation - Browser
 ```html
-<script src="not yet"></script>
+<script src="https://unpkg.com/msgee@1.0.0/dist/bundle.browser.umd.js"></script>
 ```
+
