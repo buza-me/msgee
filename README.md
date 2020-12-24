@@ -8,6 +8,6 @@ npm i msgee
 
 ## Installation - Browser
 ```html
-<script src="https://unpkg.com/msgee@1.0.2/dist/bundle.browser.iife.js"></script>
+<script src="https://unpkg.com/msgee@2.0.0/dist/bundle.browser.iife.js"></script>
 ```
 
