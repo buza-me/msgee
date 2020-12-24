@@ -1,5 +1,5 @@
-import { Msgee, Channel } from './components';
+import { Msgee, Channel } from './lib';
 
-export { Channel, Msgee } from './components';
+export { Channel, Msgee } from './lib';
 
 export default new Msgee(Channel);
