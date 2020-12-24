@@ -7,7 +7,7 @@
   "repository": "github:buza-me/msgee",
   "main": "dist/lib/main.js",
   "types": "dist/lib/types/main.d.ts",
-  "browser": "dist/bundle.browser.umd.js",
+  "browser": "dist/bundle.browser.iife.js",
   "files": [
     "dist"
   ],

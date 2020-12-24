@@ -4,8 +4,8 @@ import { terser } from 'rollup-plugin-terser';
 export default {
   input: 'src/browser.ts',
   output: {
-    file: 'dist/bundle.browser.umd.js',
-    format: 'umd',
+    file: 'dist/bundle.browser.iife.js',
+    format: 'iife',
     name: 'msgee',
     exports: 'named',
     sourcemap: true,

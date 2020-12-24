@@ -1,1 +1,3 @@
-export { default as instance, Msgee, Channel } from './main';
+import msgeeInstance from './main';
+
+(window as any).msgee = msgeeInstance;
