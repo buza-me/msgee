@@ -1,5 +1,5 @@
 # msgee
-An extended events manager
+An extended events manager. Provides messaging between app components and between browser tabs.
 
 ## Installation - NPM
 ```sh
