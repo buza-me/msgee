@@ -1,5 +1,5 @@
-import { Msgee, Channel } from './lib';
+import { Msgee } from './lib';
 
-export { Channel, Msgee } from './lib';
+export { Msgee } from './lib';
 
-export default new Msgee(Channel);
+export default new Msgee();
