@@ -46,7 +46,9 @@ msgee.push(channelName, message, { isMultiTab: true });
 
 ***
 **In-depth usage:**
-If for some reason you need a few Msgee instances, you can create one using a constructor with a storage key as a first argument. It is important for multi-tab communication, is optional and defaults to ```msgee-storage```.
+
+If for some reason you need a few Msgee instances:
+You can create one using a constructor with a storage key as a first argument. It is important for multi-tab communication, is optional and defaults to ```msgee-storage```. You need to pass a storage name for it to properly function.
 ```js
 import { Msgee } from 'msgee';
 
@@ -55,7 +57,8 @@ const withDefaultName = new Msgee();
 const withCustomName = new Msgee('storage-key-name');
 ```
 
-If for some reason you're unhappy with a default storage key name, you can change it without a need to create a new instance with the constructor, just call the method:
+If for some reason you're unhappy with a default storage key name:
+You can change it without a need to create a new instance with the constructor, just call the method:
 ```js
 import msgee from 'msgee';
 
@@ -84,7 +87,8 @@ const someChannelWithData = msgee.setChannelData(channelName, serializableValues
 
 If you want to get accumulated channel messages use ```msgee.getChannelData```:
 ```js
-const channelData = msgee.getChannelData('hey-hey');
+const channelName = 'hey-hey';
+const channelData = msgee.getChannelData(channelName);
 ```
 
 If you want to delete a channel data, use ```msgee.deleteChannelData```:
