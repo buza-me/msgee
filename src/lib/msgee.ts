@@ -1,17 +1,13 @@
-import { Message, SubscriptionSet, Subscription, PushOptions } from './types';
+import { Message, SubscriptionSet, Subscription, PushOptions, CallbackExecuter } from './types';
 
 export class Msgee {
-  protected subscriptions: Map<string, SubscriptionSet> = new Map();
-
-  protected channelDataMap: Map<string, Message[]> = new Map();
-
   constructor(protected storageKey: string = 'msgee-storage') {
     globalThis?.addEventListener('storage', this.storageEventListener);
   }
 
-  public setStorageKey = (name: string): void => {
-    this.storageKey = name;
-  };
+  protected subscriptions: Map<string, SubscriptionSet> = new Map();
+
+  protected channelDataMap: Map<string, Message[]> = new Map();
 
   protected storageEventListener = (event: StorageEvent): void => {
     if (event.key === this.storageKey) {
@@ -19,6 +15,20 @@ export class Msgee {
 
       this.push(message.name, message.data);
     }
+  };
+
+  protected callbackExecuteSync: CallbackExecuter = (subscriptionSet, data) =>
+    subscriptionSet?.forEach((callback) => callback(data));
+
+  protected callbackExecuteAsync: CallbackExecuter = (subscriptionSet, data) => {
+    const channel: MessageChannel = new MessageChannel();
+    subscriptionSet?.forEach((callback) => channel.port2.addEventListener('message', (): void => callback(data)));
+    channel.port2.start();
+    channel.port1.postMessage(data);
+  };
+
+  public setStorageKey = (name: string): void => {
+    this.storageKey = name;
   };
 
   public subscribe = (name: string, callback: Subscription): (() => boolean) => {
@@ -54,7 +64,11 @@ export class Msgee {
       channelData.push(data);
     }
 
-    subscriptionSet?.forEach((callback) => callback(data));
+    if (options?.isAsync) {
+      this.callbackExecuteAsync(subscriptionSet, data);
+    } else {
+      this.callbackExecuteSync(subscriptionSet, data);
+    }
   };
 
   public setChannelData = (name = '', baseData: Message[] = []): Message[] => {

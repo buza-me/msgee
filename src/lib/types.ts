@@ -5,4 +5,6 @@ export type SubscriptionSet = Set<Subscription>;
 export type PushOptions = {
   isMultiTab?: boolean;
   shouldSave?: boolean;
+  isAsync?: boolean;
 };
+export type CallbackExecuter = (subscriptionSet: SubscriptionSet, data: Message) => void;

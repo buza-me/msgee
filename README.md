@@ -42,6 +42,9 @@ msgee.push(channelName, message);
 
 // Send a message across browser tabs:
 msgee.push(channelName, message, { isMultiTab: true });
+
+// Post message with async listener execution:
+msgee.push(channelName, message, { isAsync: true });
 ```
 
 ***
