@@ -1,17 +1,13 @@
-import { Message, SubscriptionSet, Subscription, IChannel, IChannelConstructor } from './types';
+import { Message, SubscriptionSet, Subscription, PushOptions, CallbackExecuter } from './types';
 
 export class Msgee {
-  protected subscriptions: Map<string, SubscriptionSet> = new Map();
-
-  protected channels: Map<string, IChannel> = new Map();
-
-  constructor(protected ChannelConstructor: IChannelConstructor, protected storageKey: string = 'msgee-storage') {
-    window.addEventListener('storage', this.storageEventListener);
+  constructor(protected storageKey: string = 'msgee-storage') {
+    globalThis?.addEventListener('storage', this.storageEventListener);
   }
 
-  public setStorageKey = (name: string): void => {
-    this.storageKey = name;
-  };
+  protected subscriptions: Map<string, SubscriptionSet> = new Map();
+
+  protected channelDataMap: Map<string, Message[]> = new Map();
 
   protected storageEventListener = (event: StorageEvent): void => {
     if (event.key === this.storageKey) {
@@ -21,13 +17,27 @@ export class Msgee {
     }
   };
 
+  protected callbackExecuteSync: CallbackExecuter = (subscriptionSet, data) =>
+    subscriptionSet?.forEach((callback) => callback(data));
+
+  protected callbackExecuteAsync: CallbackExecuter = (subscriptionSet, data) => {
+    const channel: MessageChannel = new MessageChannel();
+    subscriptionSet?.forEach((callback) => channel.port2.addEventListener('message', (): void => callback(data)));
+    channel.port2.start();
+    channel.port1.postMessage(data);
+  };
+
+  public setStorageKey = (name: string): void => {
+    this.storageKey = name;
+  };
+
   public subscribe = (name: string, callback: Subscription): (() => boolean) => {
     if (!this.subscriptions.has(name)) {
       this.subscriptions.set(name, new Set());
     }
 
-    if (!this.channels.has(name)) {
-      this.setChannel(name);
+    if (!this.channelDataMap.has(name)) {
+      this.setChannelData(name);
     }
 
     this.subscriptions.get(name)?.add(callback);
@@ -35,39 +45,39 @@ export class Msgee {
     return () => this.subscriptions.get(name)?.delete(callback);
   };
 
-  public push = (name: string, data: Message, isMultiTab = false): void => {
-    if (isMultiTab) {
+  public push = (name: string, data: Message, options?: PushOptions): void => {
+    if (options?.isMultiTab && globalThis.localStorage) {
       const message: string = JSON.stringify({
         name,
         data,
         id: Date.now(),
       });
 
-      localStorage.setItem(this.storageKey, message);
+      globalThis.localStorage.setItem(this.storageKey, message);
     }
 
     const subscriptionSet: SubscriptionSet = this.subscriptions.get(name);
 
-    if (!subscriptionSet?.size) {
-      const channel = this.getChannel(name) || this.setChannel(name);
+    if (!subscriptionSet?.size || options?.shouldSave) {
+      const channelData = this.getChannelData(name) || this.setChannelData(name);
 
-      channel.push(data, false);
-
-      return;
+      channelData.push(data);
     }
 
-    subscriptionSet.forEach((callback) => callback(data));
+    if (options?.isAsync) {
+      this.callbackExecuteAsync(subscriptionSet, data);
+    } else {
+      this.callbackExecuteSync(subscriptionSet, data);
+    }
   };
 
-  public setChannel = (name = '', baseData: Message[] = []): IChannel => {
-    const newChannel: IChannel = new this.ChannelConstructor(name, this.push, baseData);
+  public setChannelData = (name = '', baseData: Message[] = []): Message[] => {
+    this.channelDataMap.set(name, baseData);
 
-    this.channels.set(name, newChannel);
-
-    return newChannel;
+    return baseData;
   };
 
-  public getChannel = (name: string): IChannel => this.channels.get(name);
+  public getChannelData = (name: string): Message[] | void => this.channelDataMap.get(name);
 
-  public deleteChannel = (name: string): boolean => this.channels.delete(name);
+  public deleteChannelData = (name: string): boolean => this.channelDataMap.delete(name);
 }
