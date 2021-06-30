@@ -1,4 +1,4 @@
-import { Message, SubscriptionSet, Subscription, PushOptions, CallbackExecuter } from './types';
+import { Message, SubscriptionSet, Subscription, PushOptions, CallbackExecuter, StoredMessage } from './types';
 
 export class Msgee {
   constructor(protected storageKey: string = 'msgee-storage') {
@@ -13,7 +13,7 @@ export class Msgee {
     if (event.key === this.storageKey) {
       const message = JSON.parse(event.newValue);
 
-      this.push(message.name, message.data);
+      this.push(message.name, message.data, message.options);
     }
   };
 
@@ -47,11 +47,17 @@ export class Msgee {
 
   public push = (name: string, data: Message, options?: PushOptions): void => {
     if (options?.isMultiTab && globalThis.localStorage) {
-      const message: string = JSON.stringify({
+      const storedMessage: StoredMessage = {
         name,
         data,
+        options: {
+          ...(options || {}),
+          isMultiTab: false,
+        },
         id: Date.now(),
-      });
+      };
+
+      const message: string = JSON.stringify(storedMessage);
 
       globalThis.localStorage.setItem(this.storageKey, message);
     }

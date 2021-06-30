@@ -8,3 +8,9 @@ export type PushOptions = {
   isAsync?: boolean;
 };
 export type CallbackExecuter = (subscriptionSet: SubscriptionSet, data: Message) => void;
+export type StoredMessage = {
+  name: string;
+  data: Message;
+  options: PushOptions;
+  id: number;
+};
